@@ -29,6 +29,22 @@ const SSOuserSchema = new mongoose.Schema({
 });
 const SSOuser = mongoose.model('SSOuser', SSOuserSchema);
 
+const getUserRoles = async (userId) => {
+  try {
+    const user = await SSOuser.findById(userId).populate('roles'); // Populating roles
+    if (!user) {
+      return console.log('User not found');
+    }
+    console.log('User Roles:', user.roles);
+    return user.roles;
+  } catch (error) {
+    console.error('Error fetching user roles:', error);
+  }
+};
+
+
+
+
 // Routes
 
 // 1. Create a User (Register)
@@ -44,10 +60,25 @@ app.post('/users', async (req, res) => {
   }
 });
 
-app.get("/roles",async(req,res)=>{
-  const users = await Role.find();
-    res.json(users);
-})
+app.post('/roles', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    console.log({ userId });
+
+    const user = await SSOuser.findById(userId).populate('roles');
+
+    if (!user || !user.roles || user.roles.length === 0) {
+      return res.json([]); // Always return an array
+    }
+
+    console.log('User Roles:', user.roles);
+    res.json(user.roles);
+  } catch (error) {
+    console.error('Error fetching roles:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // 2. Get All Users
 app.get('/users', async (req, res) => {
   try {
@@ -117,6 +148,10 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
+
+
 
 // Server Start
 const PORT = 5002;
