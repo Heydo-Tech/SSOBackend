@@ -60,7 +60,7 @@ app.post('/users', async (req, res) => {
   }
 });
 
-app.post('/roles', async (req, res) => {
+app.post('/roless', async (req, res) => {
   try {
     const { userId } = req.body;
     console.log({ userId });
@@ -76,7 +76,7 @@ app.post('/roles', async (req, res) => {
   } catch (error) {
     console.error('Error fetching roles:', error);
     res.status(500).json({ error: 'Internal Server Error' });
-  }
+}
 });
 
 // 2. Get All Users
@@ -150,9 +150,10 @@ app.post('/login', async (req, res) => {
 });
 
 
-
-
-
+app.get('/roles',async(req,res)=>{
+const data  = await Role.find();
+res.send(data); 
+})
 // Server Start
 const PORT = 5002;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
