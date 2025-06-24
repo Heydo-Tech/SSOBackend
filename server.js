@@ -155,5 +155,5 @@ const data  = await Role.find();
 res.send(data); 
 })
 // Server Start
-const PORT = 5002;
+const PORT = 5055;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
